@@ -14,34 +14,60 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(initialize:
-                  (NSDictionary *)options
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-
-    // throw if index.js has failed to pass a complete options object
-    if (!(options[@"endpoint"] != nil &&
-          options[@"namespace"] != nil &&
-          options[@"appId"] != nil &&
-          options[@"method"] != nil &&
-          options[@"protocol"] != nil &&
-          options[@"base64Encoded"] != nil &&
-          options[@"platformContext"] != nil &&
-          options[@"applicationContext"] != nil &&
-          options[@"lifecycleEvents"] != nil &&
-          options[@"screenContext"] != nil &&
-          options[@"sessionContext"] != nil &&
-          options[@"foregroundTimeout"] != nil &&
-          options[@"backgroundTimeout"] != nil &&
-          options[@"checkInterval"] != nil &&
-          options[@"installTracking"] != nil)) {
-
-        NSError * error = [NSError errorWithDomain:@"SnowplowTracker" code:100 userInfo:nil];
-        return reject(@"ERROR", @"SnowplowTracker: initialize() method - missing parameter with no default found", error);
+RCT_EXPORT_METHOD(initialize
+                  :(nonnull NSString *)endpoint
+                  :(nonnull NSString *)method
+                  :(nonnull NSString *)protocol
+                  :(nonnull NSString *)namespace
+                  :(nonnull NSString *)appId
+                  :(NSDictionary *)options
+                  //:(BOOL *)autoScreenView
+                  //:(BOOL *)setPlatformContext
+                  //:(BOOL *)setGeoLocationContext
+                  //:(BOOL *)setBase64Encoded
+                  //:(BOOL *)setApplicationContext
+                  //:(BOOL *)setLifecycleEvents
+                  //:(BOOL *)setScreenContext
+                  //:(BOOL *)setInstallEvent
+                  //:(BOOL *)setExceptionEvents
+                  //:(BOOL *)setSessionContext
+                  //:(INT *)setForegroundTimeout
+                  //:(INT *)setBackgroundTimeout
+                  //:(STRING *)userId
+                ) {
+    BOOL setPlatformContext = NO;
+    BOOL setGeoLocationContext = NO;
+    if (options[@"setPlatformContext"] == @YES ) setPlatformContext = YES;
+    if (options[@"setGeoLocationContext"] == @YES ) setGeoLocationContext = YES;
+    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:setPlatformContext andGeoContext:setGeoLocationContext];
+    if (options[@"userId"] != nil) {
+            [subject setUserId:options[@"userId"]];
     }
-
-    SPSubject *subject = [[SPSubject alloc] initWithPlatformContext:[options[@"platformContext"] boolValue] andGeoContext:NO];
-
+    if (options[@"screenWidth"] != nil && options[@"screenHeight"] != nil) {
+        [subject setResolutionWithWidth:[options[@"screenWidth"] integerValue] andHeight:[options[@"screenHeight"] integerValue]];
+    }
+    if (options[@"colorDepth"] != nil) {
+        [subject setColorDepth:[options[@"colorDepth"] integerValue]];
+    }
+    if (options[@"timezone"] != nil) {
+        [subject setTimezone:options[@"timezone"]];
+    }
+    if (options[@"language"] != nil) {
+        [subject setLanguage:options[@"language"]];
+    }
+    if (options[@"ipAddress"] != nil) {
+        [subject setIpAddress:options[@"ipAddress"]];
+    }
+    if (options[@"useragent"] != nil) {
+        [subject setUseragent:options[@"useragent"]];
+    }
+    if (options[@"networkUserId"] != nil) {
+        [subject setNetworkUserId:options[@"networkUserId"]];
+    }
+    if (options[@"domainUserId"] != nil) {
+        [subject setDomainUserId:options[@"domainUserId"]];
+    }
+    
     SPEmitter *emitter = [SPEmitter build:^(id<SPEmitterBuilder> builder) {
         [builder setUrlEndpoint:options[@"endpoint"]];
         [builder setHttpMethod:([@"post" caseInsensitiveCompare:options[@"method"]] == NSOrderedSame) ? SPRequestPost : SPRequestGet];
@@ -50,13 +76,46 @@ RCT_EXPORT_METHOD(initialize:
 
     self.tracker = [SPTracker build:^(id<SPTrackerBuilder> builder) {
         [builder setEmitter:emitter];
-        [builder setAppId:options[@"appId"]];
-        [builder setBase64Encoded:[options[@"base64Encoded"] boolValue]];
-        [builder setTrackerNamespace:options[@"namespace"]];
-        [builder setApplicationContext:[options[@"applicationContext"] boolValue]];
-        [builder setLifecycleEvents:[options[@"lifecycleEvents"] boolValue]];
-        [builder setScreenContext:[options[@"screenContext"] boolValue]];
-        [builder setInstallEvent:[options[@"installTracking"] boolValue]];
+        [builder setAppId:appId];
+        // setBase64Encoded
+        if (options[@"setBase64Encoded"] == @YES ) {
+            [builder setBase64Encoded:YES];
+        }else [builder setBase64Encoded:NO];
+        [builder setTrackerNamespace:namespace];
+        [builder setAutotrackScreenViews:options[@"autoScreenView"]];
+        // setApplicationContext
+        if (options[@"setApplicationContext"] == @YES ) {
+            [builder setApplicationContext:YES];
+        }else [builder setApplicationContext:NO];
+        // setSessionContextui
+        if (options[@"setSessionContext"] == @YES ) {
+            [builder setSessionContext:YES];
+            if (options[@"checkInterval"] != nil) {
+                [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
+            }else [builder setCheckInterval:15];
+            if (options[@"foregroundTimeout"] != nil) {
+                 [builder setSessionContext:[options[@"foregroundTimeout"] integerValue]];
+            }else [builder setForegroundTimeout:600];
+            if (options[@"backgroundTimeout"] != nil) {
+                 [builder setSessionContext:[options[@"backgroundTimeout"] integerValue]];
+            }else [builder setBackgroundTimeout:300];
+        }else [builder setSessionContext:NO];
+        // setLifecycleEvents
+        if (options[@"setLifecycleEvents"] == @YES ) {
+            [builder setLifecycleEvents:YES];
+        }else [builder setLifecycleEvents:NO];
+        // setScreenContext
+        if (options[@"setScreenContext"] == @YES ) {
+            [builder setScreenContext:YES];
+        }else [builder setScreenContext:NO];
+        //setInstallEvent
+        if (options[@"setInstallEvent"] == @YES ) {
+            [builder setInstallEvent:YES];
+        }else [builder setInstallEvent:NO];
+        //setExceptionEvents
+        if (options[@"setExceptionEvents"] == @YES ) {
+            [builder setExceptionEvents:YES];
+        }else [builder setExceptionEvents:NO];
         [builder setSubject:subject];
         [builder setSessionContext:[options[@"sessionContext"] boolValue]];
         [builder setCheckInterval:[options[@"checkInterval"] integerValue]];
@@ -223,6 +282,69 @@ RCT_EXPORT_METHOD(trackPageViewEvent
         }
     }];
     [self.tracker trackPageViewEvent:pageViewEvent];
+}
+
+RCT_EXPORT_METHOD(trackPageView
+                  :(nonnull NSString *)pageUrl // required (non-empty string)
+                  :(NSString *)pageTitle
+                  :(NSString *)pageReferrer
+                  :(NSArray<SPSelfDescribingJson *> *)contexts) {
+    SPPageView * trackerEvent = [SPPageView build:^(id<SPPageViewBuilder> builder) {
+        [builder setPageUrl:pageUrl];
+        if (pageTitle != nil) [builder setPageTitle:pageTitle];
+        if (pageReferrer != nil) [builder setReferrer:pageReferrer];
+        if (contexts) {
+            [builder setContexts:[[NSMutableArray alloc] initWithArray:contexts]];
+        }
+    }];
+    [self.tracker trackPageViewEvent:trackerEvent];
+}
+
+RCT_EXPORT_METHOD(setUserId
+                  :(nonnull NSString *)userId // required (non-empty string)
+                ) {
+    SPSubject * s = self.tracker.subject;
+    if (userId != nil) {
+        [s setUserId:userId];
+        [self.tracker setSubject:s];
+    }
+}
+
+RCT_EXPORT_METHOD(getSessionUserId:(RCTPromiseResolveBlock)resolve 
+                  rejecter:(RCTPromiseRejectBlock)reject
+                 ) {
+  NSError *error;
+  NSString *contents = [self.tracker getSessionUserId];
+  if (contents) {
+    resolve(contents);
+  } else {
+    reject(@"data_issue", @"Cannot obtain SESSION_USER_ID", error);
+  }
+}
+
+RCT_EXPORT_METHOD(getSessionId:(RCTPromiseResolveBlock)resolve 
+                  rejecter:(RCTPromiseRejectBlock)reject
+                 ) {
+  NSError *error;
+  NSString *contents = [self.tracker getSessionId];
+  if (contents) {
+    resolve(contents);
+  } else {
+    reject(@"data_issue", @"Cannot obtain SESSION_ID", error);
+  }
+}
+
+RCT_EXPORT_METHOD(getSessionIndex:(RCTPromiseResolveBlock)resolve 
+                  rejecter:(RCTPromiseRejectBlock)reject
+                 ) {
+  NSError *error;
+  NSInteger contents = [self.tracker getSessionIndex];
+  NSNumber *val= [NSNumber numberWithInteger:contents];
+  if (val) {
+    resolve(val);
+  } else {
+    reject(@"data_issue", @"Cannot obtain SESSION_INDEX", error);
+  }
 }
 
 @end
