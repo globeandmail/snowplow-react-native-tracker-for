@@ -47,7 +47,7 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
         this.emitter = new Emitter.EmitterBuilder(endpoint, this.reactContext)
                 .method(method.equalsIgnoreCase("post") ? HttpMethod.POST : HttpMethod.GET)
                 .security(protocol.equalsIgnoreCase("https") ? RequestSecurity.HTTPS : RequestSecurity.HTTP)
-                .option(BufferOption.Single).build();
+                .build();
         this.emitter.waitForEventStore();
         com.snowplowanalytics.snowplow.tracker.Subject subject = new com.snowplowanalytics.snowplow.tracker.Subject.SubjectBuilder()
                 .build();
