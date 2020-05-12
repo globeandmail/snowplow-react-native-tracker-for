@@ -201,4 +201,16 @@ RCT_EXPORT_METHOD(setUserId
     }
 }
 
+RCT_EXPORT_METHOD(getSessionUserId:(RCTPromiseResolveBlock)resolve 
+                  rejecter:(RCTPromiseRejectBlock)reject
+                 ) {
+  NSError *error;
+  NSString *contents = [self.tracker getSessionUserId];
+  if (contents) {
+    resolve(contents);
+  } else {
+    reject(@"data_issue", @"Cannot obtain SESSION_USER_ID", error);
+  }
+}
+
 @end

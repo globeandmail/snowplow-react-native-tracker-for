@@ -1,4 +1,3 @@
-
 # @snowplow/react-native-tracker
 
 ## Disclaimer
@@ -33,11 +32,9 @@ RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsons
 
 Run the app with: `react-native run-ios` from the root of the project.
 
-
 ### Running on Android
 
 `react-native run-android` from the root of the project.
-
 
 ## Available methods
 
@@ -74,7 +71,6 @@ Available options:
 autoScreenView - boolean, if enabled the tracker will attempt to autotrack screen views via the same method as the native iOS and Android trackers. Note that this feature depends on Activities/ViewDidAppear within the native app itself.
 
 `RNSnowplowTracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {autoScreenView:false})`
-
 
 ### Track a custom event:
 
@@ -133,7 +129,18 @@ transitionType - optional, the transition type between the last screen and curre
 
 contexts - array of optional Snowplow self-describing JSONs for custom conexts.
 
-
 **Example**
 
 `RNSnowplowTracker.trackScreenViewEvent('Name', null, null, null, null, null, null, [])`
+
+### Get Session User ID
+
+Call this function from the App:
+
+```javascript
+const myFunction = (async () => {
+  const SUID = await Tracker.getSessionUserId();
+  // Call API if promise is resolved
+  //console.log(SUID);
+})();
+```
