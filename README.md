@@ -1,4 +1,3 @@
-
 # @snowplow/react-native-tracker
 
 [![Early Release]][Tracker Classificiation] [![Release][release-image]][releases] [![License][license-image]][license]
@@ -157,6 +156,7 @@ trackPageViewEvent({
 );
 ```
 
+<<<<<<< HEAD
 ### Attaching custom contexts
 
 All track methods take an optional second argument - an array of 0 or more self-describing JSONs for custom contexts:
@@ -200,6 +200,9 @@ trackPageViewEvent({
 ```
 
 ## Contributing
+=======
+### Track a custom event:
+>>>>>>> ANALYTICS-744: Get Session User ID
 
 Please read CONTRIBUTING.md for general guidelines on contributing.
 
@@ -271,6 +274,7 @@ bash .scripts/cleanBuildAndRun.sh both
 [Tracker Classificiation]: https://github.com/snowplow/snowplow/wiki/Tracker-Maintenance-Classification
 [Early Release]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Early%20Release&color=014477&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
 
+<<<<<<< HEAD
 [release-image]: https://img.shields.io/badge/release-0.1.0-orange.svg?style=flat
 [releases]: https://github.com/snowplow/snowplow/releases
 
@@ -279,3 +283,20 @@ bash .scripts/cleanBuildAndRun.sh both
 
 [techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/
 [techdocs-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/techdocs.png
+=======
+**Example**
+
+`RNSnowplowTracker.trackScreenViewEvent('Name', null, null, null, null, null, null, [])`
+
+### Get Session User ID
+
+Call this function from the App:
+
+```javascript
+const myFunction = (async () => {
+  const SUID = await Tracker.getSessionUserId();
+  // Call API if promise is resolved
+  //console.log(SUID);
+})();
+```
+>>>>>>> ANALYTICS-744: Get Session User ID
