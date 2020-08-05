@@ -221,4 +221,26 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             promise.reject("Cannot obtain SESSION_USER_ID");
         }
     }
+    
+    @ReactMethod
+    public void getSessionSessionId(final Promise promise) {
+        try {
+            Map<String, Object> sessionData = tracker.instance().getSession().getSessionValues();
+            Object result = sessionData.get(Parameters.SESSION_SESSION_ID);
+            promise.resolve(result);
+        } catch (Exception e) {
+            promise.reject("Cannot obtain SESSION_SESSION_ID");
+        }
+    }
+    
+    @ReactMethod
+    public void getSessionSessionIndex(final Promise promise) {
+        try {
+            Map<String, Object> sessionData = tracker.instance().getSession().getSessionValues();
+            Object result = sessionData.get(Parameters.SESSION_SESSION_INDEX);
+            promise.resolve(result);
+        } catch (Exception e) {
+            promise.reject("Cannot obtain SESSION_SESSION_INDEX");
+        }
+    }
 }
