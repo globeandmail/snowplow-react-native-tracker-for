@@ -1,12 +1,52 @@
+Version 0.1.0 (2020-07-10)
+--------------------------
+Add issue templates (#89)
+Add CONTRIBUTING.md (#80)
+Use recommended config as defaults (#86)
+Fix iOS null comparison warnings (#85)
+Return after promise rejection on Android (#84)
+Update arguments and var names for consistency (#83)
+Update DemoApp (#82)
+Use fast fail on iOS (#87)
+Update README (#77)
+Dynamically use latest minor version of native tracker (#19)
+Cleanup code formatting (#75)
+Add Snyk Github Action (#71)
+Add license (#62)
+Handle setSubjectData values appropriately (#70)
+Return promise on intialize() (#66)
+Remove deprecated options (#69)
+Expand testing scripts (#72)
+Refactor method instrumentation (#58)
+Fix compile warnings caused by unsafe comparison (#73)
+Fix double self calls (#74)
+Remove screen_id workaround (#57)
+
+Version 0.1.0-alpha.17 (2020-05-04)
+-----------------------------------
+Use yarn everywhere for testing (#55)
+Update ios tracker version to 1.3.0 (#54)
+
+Version 0.1.0-alpha.16 (2020-04-16)
+-----------------------------------
+Update .npmignore and .gitignore (#51)
+Update README (#50)
+Update Demo App (#48)
+Add trackPageView (#33)
+Add script for clean build (#47)
+Add setSubjectData method (#46)
+Update android tracker version (#45)
+Add Standard Settings (#34)
+
 Version 0.1.0-alpha.15 (2020-02-06)
 -----------------------------------
-6363ea1 Cleanup Repo (#29)
-4a681f5 Update DemoApp (#21)
-067bc92 Update ios Tracker dependency to remove mandatory dynamic build (#22)
+Cleanup Repo (#29)
+Update DemoApp (#21)
+Update ios Tracker dependency to remove mandatory dynamic build (#22)
 
 Version 0.1.0-alpha.14 (2019-10-22)
 ----------------------------------
-Update iOS to incorporate patch release (close #23)
+Update iOS to incorporate patch release (#23)
 
 Version 0.1.0-alpha.13 (2019-10-14)
 -----------------------------------

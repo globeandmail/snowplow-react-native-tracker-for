@@ -1,16 +1,12 @@
 # @snowplow/react-native-tracker
 
-## Disclaimer
+[![Early Release]][Tracker Classificiation] [![Release][release-image]][releases] [![License][license-image]][license]
 
-**This project is currently in alpha status.**
-
-Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/). Be sure to reply to our [feedback thread](https://discourse.snowplowanalytics.com/t/react-feedback-thread/3239) to tell us how it's all working!
-
-Due to pending design decisions, breaking changes in how the methods are called may be introduced before a beta/v1 release.
+Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/).
 
 ## Getting started
 
-From the root of your react-js project:
+From the root of your react-native project:
 
 `$ npm install @snowplow/react-native-tracker --save`
 
@@ -18,12 +14,32 @@ From the root of your react-js project:
 
 The tracker will be imported as a NativeModule. Initialise it then call the relevant tracking method:
 
-```
-import {NativeModules} from 'react-native';
+```JavaScript
+import Tracker from '@snowplow/react-native-tracker';
 
-let RNSnowplowTracker = NativeModules.RNSnowplowTracker;
-RNSnowplowTracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {});
-RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);
+
+Tracker.initialize({
+  // required
+  endpoint: 'test-endpoint',
+  namespace: 'my-namespace',
+  appId: 'my-app-id',
+
+  // optional
+  method: 'post',
+  protocol: 'https',
+  base64Encoded : true,
+  platformContext : true,
+  applicationContext : false,
+  lifecycleEvents : false,
+  screenContext : true,
+  sessionContext : true,
+  foregroundTimeout : 600,
+  backgroundTimeout : 300,
+  checkInterval : 15,
+  installTracking : false
+});
+
+Tracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/hello_world_event/jsonschema/1-0-0', 'data': {'message': 'hello world'}});
 ```
 
 ### Running on iOS
@@ -38,109 +54,227 @@ Run the app with: `react-native run-ios` from the root of the project.
 
 ## Available methods
 
-Note:
-
-Optional string arguments if not set must be specified as `null`.
-
-Optional object arguments must be provided as an empty object if none are set.
-
-Optional keys within an object argument can be omitted if not set.
-
-Optional array arguments must be provided as empty arrays if not set.
+All methods take a JSON of named arguments.
 
 ### Instantiate the tracker:
 
-`initialize(string endpoint, string method (post or get), string protocol (https or http), string namespace, string appId, JSON options<boolean autoScreenView>)`
+```JavaScript
 
-**Arguments:**
+initialize({
+  // required
+  endpoint: 'my-endpoint.com',
+  namespace: 'my-namespace',
+  appId: 'my-app-id',
 
-endpoint - required, collector endpoint string (without protocol)
+  // optional
+  method: 'post',
+  protocol: 'https',
+  platformContext: true,
+  base64Encoded: true,
+  applicationContext: true,
+  lifecycleEvents: true,
+  screenContext: true,
+  sessionContext: true,
+  foregroundTimeout: 600,
+  backgroundTimeout: 300,
+  checkInterval: 15,
+  installTracking: true
+  }
+);
+```
 
-method - required, http method (`get`/`post`)
+### Set the subject data:
 
-protocol - required, http protocol (`http`/`https`)
+Setting custom subject data is optional, can be called any time, and can be called again to update the subject. Once set, the specified parameters are set for all subsequent events. (For example, a userid may be set after login, and once set all subsequent events will contain the userid).
 
-namespace - required, tracker namespace
+```JavaScript
+setSubjectData({ // All parameters optional
+  userId: 'my-userId', // user id, string
+  screenWidth: 123, // screen width, integer
+  screenHeight: 456, // screen height, integer
+  colorDepth: 20, // colour depth, integer
+  timezone: 'Europe/London', // timezone, string enum
+  language: 'en', // language, string enum
+  ipAddress: '123.45.67.89', // IP address, string
+  useragent: '[some-user-agent-string]', // user agent, string
+  networkUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e', // network user id, UUID4 string
+  domainUserId: '5d79770b-015b-4af8-8c91-b2ed6faf4b1e',// domain user id, UUID4 string
+  viewportWidth: 123, // viewport width, integer
+  viewportHeight: 456 // viewport height, integer
+  }
+);
+```
 
-appId - required, appId
-
-options - JSON object of optional parameter key value pairs.
-
-Available options:
-
-autoScreenView - boolean, if enabled the tracker will attempt to autotrack screen views via the same method as the native iOS and Android trackers. Note that this feature depends on Activities/ViewDidAppear within the native app itself.
-
-`RNSnowplowTracker.initialize('test-endpoint-url', 'post', 'https', 'namespace', 'app-id', {autoScreenView:false})`
 
 ### Track a custom event:
 
-`trackSelfDescribingEvent(JSON event, Array<JSON> contexts)`
-
-**Arguments:**
-
-event - required, Snowplow self-describing JSON for the custom event.
-
-contexts - array of optional Snowplow self-describing JSONs for custom conexts.
-
-**Example**
-
-`RNSnowplowTracker.trackSelfDescribingEvent({'schema': 'iglu:com.acme/event/jsonschema/1-0-0', 'data': {'message': 'hello world'}}, []);`
+```JavaScript
+trackSelfDescribingEvent({ // Self-describing JSON for the custom event
+  'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
+  'data': {'message': 'hello world'}
+});
+```
 
 ### Track a structured event:
 
-`trackStructuredEvent(string category, string action, string label, string property, number value, Array<JSON> contexts)`
-
-**Arguments:**
-
-category - required, structured event category.
-
-action - required, structured event action.
-
-label - optional, structured event label.
-
-property - optional, structured event property.
-
-value - optional, structured event value.
-
-contexts - array of optional Snowplow self-describing JSONs for custom conexts.
-
-**Example**
-
-`RNSnowplowTracker.trackStructuredEvent('category', 'action', 'label', 'property', 50.00, [])`
-
-### Track a Screen View (manually):
-
-`trackScreenViewEvent(string screenName, UUID4 string screenId, string screenType, string previousScreenName, string previousScreenType, UUID4 string previousScreenId, string transitionType, Array<JSON> contexts)`
-
-**Arguments:**
-
-screenName - required, name of current screen.
-
-screenId - optional UUID4 string to be used as screen View identifier. Denotes one instance of a screen. view (not one instance of a screen). The react-native tracker will provide a UUID4 if not set.
-screenType - optional type of current screen.
-
-previousScreenName - optional, name of previous screen (user must define logic to grab last screen name).
-
-previousScreenType - optional, type of previous screen (user must define logic to grab last screen type).
-
-previousScreenId - optional, screenId of previous screen (user must define logic to grab last screen id). The react-native tracker will leave this value empty if not set.
-
-transitionType - optional, the transition type between the last screen and current.
-
-contexts - array of optional Snowplow self-describing JSONs for custom conexts.
-
-**Example**
-
-`RNSnowplowTracker.trackScreenViewEvent('Name', null, null, null, null, null, null, [])`
-
-### Get Session User ID
-
-Call this function from the App:
-
-```javascript
-const myFunction = (async () => {
-  const SUID = await Tracker.getSessionUserId();
-  // Call API if promise is resolved
-  //console.log(SUID);
-})();
+```JavaScript
+trackStructuredEvent({
+  // required
+  category: 'my-category',
+  action: 'my-action',
+  // optional
+  label: 'my-label',
+  property: 'my-property',
+  value: 50.00
+  }
+);
 ```
+
+### Track a Screen View:
+
+Note - for the track Screen View method, if previous screen values aren't set, they should be automatically set by the tracker.
+
+```JavaScript
+trackScreenViewEvent({
+  screenName: 'my-screen-name', //required
+  // optional:
+  screenType: 'my-screen-type',
+  transitionType: 'my-transition'
+  }
+);
+```
+
+### Track a Page View:
+
+```JavaScript
+trackPageViewEvent({
+  pageUrl: 'https://www.my-page-url.com', // required
+  //optional:
+  pageTitle: 'my page title',
+  pageReferrer: 'http://www.my-refr.com'
+  }
+);
+```
+
+### Attaching custom contexts
+
+All track methods take an optional second argument - an array of 0 or more self-describing JSONs for custom contexts:
+
+```JavaScript
+trackSelfDescribingEvent({ // Self-describing JSON for the custom event
+  'schema': 'iglu:com.acme/event/jsonschema/1-0-0',
+  'data': {'message': 'hello world'}
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+
+trackStructuredEvent({// required
+  category: 'my-category',
+  action: 'my-action',
+  // optional
+  label: 'my-label',
+  property: 'my-property',
+  value: 50.00
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+
+trackScreenViewEvent({
+  screenName: 'my-screen-name', //required
+  // optional:
+  screenType: 'my-screen-type',
+  transitionType: 'my-transition'
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+
+trackPageViewEvent({
+  pageUrl: 'https://www.my-page-url.com', //required
+  // optional
+  pageTitle: 'my page title',
+  pageReferrer: 'http://www.my-refr.com'
+  },
+  [{schema: "iglu:com.acme/entity/jsonschema/1-0-0", data: {myEntityField: "hello world"}}]
+);
+```
+
+## Contributing
+
+Please read CONTRIBUTING.md for general guidelines on contributing.
+
+### Setting up
+
+Assuming a react-native environment is set up, the demoApp can be used to test changes, with:
+
+```bash
+# android
+
+cd DemoApp
+react-native run-android
+```
+
+and
+
+```bash
+# ios
+
+cd DemoApp/ios
+pod install
+cd ..
+react-native run-ios
+```
+
+### Testing
+
+Currently, testing is done manually. PRs may not be merged until an automated test framework is introduced. It is recommended to use a Snowplow Mini instance to test your changes during development.
+
+During development, to quickly test changes, the `.scripts/quickTest.sh` bash script can be used, assuming the DemoApp has already been built before. This simply replaces relevant files in the node_modules folder, and re-runs react native.
+
+```bash
+# android
+
+bash .scripts/quickTest.sh android
+
+# ios
+
+bash .scripts/quickTest.sh ios
+
+# both
+
+bash .scripts/quickTest.sh both
+```
+
+The `.scripts/cleanBuildAndRun.sh` script offers a naive way to rebuild the entire project with your changes. It uses `npm pack` to create an npm package locally, and installs it to the DemoApp, then it removes pod and gradle lock files and rebuilds all dependencies.
+
+```bash
+# android
+
+bash .scripts/cleanBuildAndRun.sh android
+
+# ios
+
+bash .scripts/cleanBuildAndRun.sh ios
+
+# both
+
+bash .scripts/cleanBuildAndRun.sh both
+```
+
+## Find out more
+
+| Technical Docs              |
+|-----------------------------|
+| ![i1][techdocs-image]       |
+| [Technical Docs][techdocs]  |
+
+[Tracker Classificiation]: https://github.com/snowplow/snowplow/wiki/Tracker-Maintenance-Classification
+[Early Release]: https://img.shields.io/static/v1?style=flat&label=Snowplow&message=Early%20Release&color=014477&labelColor=9ba0aa&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAeFBMVEVMaXGXANeYANeXANZbAJmXANeUANSQAM+XANeMAMpaAJhZAJeZANiXANaXANaOAM2WANVnAKWXANZ9ALtmAKVaAJmXANZaAJlXAJZdAJxaAJlZAJdbAJlbAJmQAM+UANKZANhhAJ+EAL+BAL9oAKZnAKVjAKF1ALNBd8J1AAAAKHRSTlMAa1hWXyteBTQJIEwRgUh2JjJon21wcBgNfmc+JlOBQjwezWF2l5dXzkW3/wAAAHpJREFUeNokhQOCA1EAxTL85hi7dXv/E5YPCYBq5DeN4pcqV1XbtW/xTVMIMAZE0cBHEaZhBmIQwCFofeprPUHqjmD/+7peztd62dWQRkvrQayXkn01f/gWp2CrxfjY7rcZ5V7DEMDQgmEozFpZqLUYDsNwOqbnMLwPAJEwCopZxKttAAAAAElFTkSuQmCC
+
+[release-image]: https://img.shields.io/badge/release-0.1.0-orange.svg?style=flat
+[releases]: https://github.com/snowplow/snowplow/releases
+
+[license-image]: https://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
+[license]: https://www.apache.org/licenses/LICENSE-2.0
+
+[techdocs]: https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/react-native-tracker/
+[techdocs-image]: https://d3i6fms1cm1j0i.cloudfront.net/github/images/techdocs.png

@@ -50,3 +50,8 @@ DemoApp/android/.project
 buck-out/
 \.buckd/
 *.keystore
+
+# Local testing workflow
+
+tmp/
+DemoApp/package-lock.json
