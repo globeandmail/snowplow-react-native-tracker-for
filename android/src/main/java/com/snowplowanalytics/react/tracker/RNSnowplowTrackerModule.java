@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import java.util.Map;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -17,6 +18,7 @@ import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
 import com.snowplowanalytics.snowplow.tracker.events.Structured;
 import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
 import com.snowplowanalytics.snowplow.tracker.events.PageView;
+import com.snowplowanalytics.snowplow.tracker.constants.Parameters;
 
 public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
