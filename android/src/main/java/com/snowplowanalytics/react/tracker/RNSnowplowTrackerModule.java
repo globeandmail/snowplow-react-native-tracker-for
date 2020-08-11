@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import java.util.Map;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -17,6 +18,7 @@ import com.snowplowanalytics.snowplow.tracker.events.SelfDescribing;
 import com.snowplowanalytics.snowplow.tracker.events.Structured;
 import com.snowplowanalytics.snowplow.tracker.events.ScreenView;
 import com.snowplowanalytics.snowplow.tracker.events.PageView;
+import com.snowplowanalytics.snowplow.tracker.constants.Parameters;
 
 public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
 
@@ -219,6 +221,28 @@ public class RNSnowplowTrackerModule extends ReactContextBaseJavaModule {
             promise.resolve(result);
         } catch (Exception e) {
             promise.reject("Cannot obtain SESSION_USER_ID");
+        }
+    }
+    
+    @ReactMethod
+    public void getSessionId(final Promise promise) {
+        try {
+            Map<String, Object> sessionData = tracker.instance().getSession().getSessionValues();
+            Object result = sessionData.get(Parameters.SESSION_ID);
+            promise.resolve(result);
+        } catch (Exception e) {
+            promise.reject("Cannot obtain SESSION_ID");
+        }
+    }
+    
+    @ReactMethod
+    public void getSessionIndex(final Promise promise) {
+        try {
+            Map<String, Object> sessionData = tracker.instance().getSession().getSessionValues();
+            Object result = sessionData.get(Parameters.SESSION_INDEX);
+            promise.resolve(result);
+        } catch (Exception e) {
+            promise.reject("Cannot obtain SESSION_INDEX");
         }
     }
 }

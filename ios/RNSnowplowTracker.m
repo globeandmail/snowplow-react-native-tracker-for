@@ -263,4 +263,29 @@ RCT_EXPORT_METHOD(getSessionUserId:(RCTPromiseResolveBlock)resolve
   }
 }
 
+RCT_EXPORT_METHOD(getSessionId:(RCTPromiseResolveBlock)resolve 
+                  rejecter:(RCTPromiseRejectBlock)reject
+                 ) {
+  NSError *error;
+  NSString *contents = [self.tracker getSessionId];
+  if (contents) {
+    resolve(contents);
+  } else {
+    reject(@"data_issue", @"Cannot obtain SESSION_ID", error);
+  }
+}
+
+RCT_EXPORT_METHOD(getSessionIndex:(RCTPromiseResolveBlock)resolve 
+                  rejecter:(RCTPromiseRejectBlock)reject
+                 ) {
+  NSError *error;
+  NSInteger contents = [self.tracker getSessionIndex];
+  NSNumber *val= [NSNumber numberWithInteger:contents];
+  if (val) {
+    resolve(val);
+  } else {
+    reject(@"data_issue", @"Cannot obtain SESSION_INDEX", error);
+  }
+}
+
 @end

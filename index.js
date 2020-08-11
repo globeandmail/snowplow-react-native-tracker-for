@@ -7,21 +7,22 @@ export default class Tracker {
   static async initialize(argmap) {
 
     let defaults = {// defaults for optional params
-                 method: 'post',
-                 protocol: 'https',
-                 base64Encoded : true,
-                 platformContext : true,
-                 applicationContext : false,
-                 lifecycleEvents : false,
-                 screenContext : true,
-                 sessionContext : true,
-                 foregroundTimeout : 600,
-                 backgroundTimeout : 300,
-                 checkInterval : 15,
-                 installTracking : false}
+      method: 'post',
+      protocol: 'https',
+      base64Encoded: true,
+      platformContext: true,
+      applicationContext: false,
+      lifecycleEvents: false,
+      screenContext: true,
+      sessionContext: true,
+      foregroundTimeout: 600,
+      backgroundTimeout: 300,
+      checkInterval: 15,
+      installTracking: false
+    }
 
-    if (typeof argmap.endpoint !== 'undefined' && typeof argmap.appId !== 'undefined' && typeof argmap.namespace !== 'undefined' ) {
-      return await RNSnowplowTracker.initialize({...defaults, ...argmap});
+    if (typeof argmap.endpoint !== 'undefined' && typeof argmap.appId !== 'undefined' && typeof argmap.namespace !== 'undefined') {
+      return await RNSnowplowTracker.initialize({ ...defaults, ...argmap });
     } else if (__DEV__) {
       console.warn("SnowplowTracker: initialize() requires endpoint, namespace and appId parameter to be set")
       return;
@@ -32,7 +33,7 @@ export default class Tracker {
     RNSnowplowTracker.setSubjectData(argmap);
   }
 
-  static trackScreenViewEvent(argmap, ctxt=[]) {
+  static trackScreenViewEvent(argmap, ctxt = []) {
 
     if (typeof argmap.screenName !== 'undefined') {
       return RNSnowplowTracker.trackScreenViewEvent(argmap, ctxt);
@@ -42,7 +43,7 @@ export default class Tracker {
     }
   }
 
-  static trackSelfDescribingEvent(argmap, ctxt=[]) {
+  static trackSelfDescribingEvent(argmap, ctxt = []) {
     if (typeof argmap.schema !== 'undefined' && typeof argmap.data !== 'undefined') {
       return RNSnowplowTracker.trackSelfDescribingEvent(argmap, ctxt);
     } else if (__DEV__) {
@@ -51,7 +52,7 @@ export default class Tracker {
     }
   }
 
-  static trackStructuredEvent(argmap, ctxt=[]) {
+  static trackStructuredEvent(argmap, ctxt = []) {
 
     if (typeof argmap.category !== 'undefined' && typeof argmap.action !== 'undefined') {
       return RNSnowplowTracker.trackStructuredEvent(argmap, ctxt);
@@ -61,7 +62,7 @@ export default class Tracker {
     }
   }
 
-  static trackPageViewEvent(argmap, ctxt=[]) {
+  static trackPageViewEvent(argmap, ctxt = []) {
 
     if (typeof argmap.pageUrl !== 'undefined') {
       return RNSnowplowTracker.trackPageViewEvent(argmap, ctxt);
@@ -70,4 +71,17 @@ export default class Tracker {
       return;
     }
   }
+
+  static async getSessionUserId() {
+    return RNSnowplowTracker.getSessionUserId();
+  }
+
+  static async getSessionId() {
+    return RNSnowplowTracker.getSessionId();
+  }
+
+  static async getSessionIndex() {
+    return RNSnowplowTracker.getSessionIndex();
+  }
+
 }
