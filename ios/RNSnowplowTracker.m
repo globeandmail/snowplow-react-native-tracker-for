@@ -322,7 +322,6 @@ RCT_EXPORT_METHOD(getSessionUserId:(RCTPromiseResolveBlock)resolve
   }
 }
 
-<<<<<<< HEAD
 RCT_EXPORT_METHOD(getSessionId:(RCTPromiseResolveBlock)resolve 
                   rejecter:(RCTPromiseRejectBlock)reject
                  ) {
@@ -348,6 +347,4 @@ RCT_EXPORT_METHOD(getSessionIndex:(RCTPromiseResolveBlock)resolve
   }
 }
 
-=======
->>>>>>> ANALYTICS-744: Get Session User ID
 @end
