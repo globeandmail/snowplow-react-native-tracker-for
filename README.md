@@ -1,5 +1,4 @@
 # @snowplow/react-native-tracker
-
 [![Early Release]][Tracker Classificiation] [![Release][release-image]][releases] [![License][license-image]][license]
 
 Feedback and contributions are welcome - if you have identified a bug, please log an issue on this repo. For all other feedback, discussion or questions please open a thread on our [discourse forum](https://discourse.snowplowanalytics.com/).
