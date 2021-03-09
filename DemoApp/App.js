@@ -30,24 +30,23 @@ import {
 const App: () => React$Node = () => {
   const initPromise = Tracker.initialize({
     // required
-    endpoint: 'test-endpoint',
-    namespace: 'namespace',
-    appId: 'my-app-id',
-
+    endpoint: 'c.stg.sophi.io',
+    namespace: 'SophiTag',
+    appId: 'sophi-sdk-test',
     // optional
     method: 'post',
     protocol: 'https',
     platformContext: true,
-    base64Encoded: true,
+    base64Encoded: false,
     applicationContext:true,
     lifecycleEvents: true,
-    screenContext: true,
+    screenContext: false,
     sessionContext: true,
-    foregroundTimeout: 10, // set unreasonably low for testing purposes
-    backgroundTimeout: 10, // set unreasonably low for testing purposes
-    checkInterval: 5,
+    foregroundTimeout: 900,
+    backgroundTimeout: 300,
+    checkInterval: 15,
     installTracking: true
-    });
+});
 
     initPromise.then(() => Tracker.setSubjectData({
       userId: 'test-userId',
